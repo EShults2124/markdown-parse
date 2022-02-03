@@ -4,7 +4,7 @@ import org.junit.*;
 public class MarkdownParseTests {
     @Test
     public void addition() {
-        assertEquals(2, 1 + 0);
+        assertEquals(1, 1 + 0);
     }
 
     @Test
