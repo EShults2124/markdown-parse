@@ -50,7 +50,7 @@ public class MarkdownParseTest {
     }
 
     @Test
-    public void testSnippet2() throws IOException {
+    public void testSnippet3() throws IOException {
 
         String testingFile = "SnippetThree.md";
 
