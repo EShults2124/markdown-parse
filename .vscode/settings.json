@@ -1,7 +1,6 @@
 {
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
-        "c:\\Users\\ITSloaner\\Downloads\\junit-4.13.2.jar",
-        "c:\\Users\\ITSloaner\\Downloads\\junit-4.10.jar"
+        "c:\\Users\\ITSloaner\\Downloads\\junit-4.13.2.jar"
     ]
 }

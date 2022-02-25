@@ -1,16 +1,33 @@
 import static org.junit.Assert.*;
+import org.junit.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
-import org.junit.*;
-
 public class MarkdownParseTest {
     @Test
     public void addition() {
         assertEquals(1, 1 + 0);
+    }
+
+    @Test
+    public void testSnippet1() throws IOException {
+
+        String testingFile = "Snippet1.md";
+
+        Path fileName = Path.of(testingFile);
+        String contents = Files.readString(fileName);
+        ArrayList<String> validLinks = MarkdownParse.getLinks(contents);
+
+        ArrayList<String> test = new ArrayList<>();
+        test.add("`google.com");
+        test.add("google.com");
+        test.add("ucsd.edu");
+
+        assertTrue(test.equals(validLinks));
+
     }
 
     /*

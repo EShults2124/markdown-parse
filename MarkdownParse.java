@@ -39,4 +39,12 @@ public class MarkdownParse {
         System.out.println(links);
     }
 
+    public static ArrayList<String> mainCopy(String nameOfFile) throws IOException {
+        Path fileName = Path.of(nameOfFile);
+        String contents = Files.readString(fileName);
+        ArrayList<String> links = getLinks(contents);
+        return links;
+
+    }
+
 }
