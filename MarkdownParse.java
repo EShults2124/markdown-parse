@@ -11,9 +11,7 @@ import java.util.Map;
 
 public class MarkdownParse {
 
-    static int counter1 = 0;
-    static int counter2 = 0;
-
+  
     static int findCloseParen(String markdown, int openParen) {
         int closeParen = openParen + 1;
         int openParenCount = 1;
@@ -36,10 +34,10 @@ public class MarkdownParse {
     public static Map<String, List<String>> getLinks(File dirOrFile) throws IOException {
         Map<String, List<String>> result = new HashMap<>();
         if (dirOrFile.isDirectory()) {
-            int counter = 0;
+          
             for (File f : dirOrFile.listFiles()) {
                 result.putAll(getLinks(f));
-                counter++;
+               
             }
             System.out.println("Total files:" + counter);
             return result;
@@ -47,7 +45,7 @@ public class MarkdownParse {
             Path p = dirOrFile.toPath();
             int lastDot = p.toString().lastIndexOf(".");
             if (lastDot == -1 || !p.toString().substring(lastDot).equals(".md")) {
-                counter1++;
+             
                 return result;
             }
             ArrayList<String> links = getLinks(Files.readString(p));
@@ -97,21 +95,9 @@ public class MarkdownParse {
 
         File contents = new File("test-files/");
 
-        // ArrayList<String> links = \
-        Map<String, List<String>> yikes = getLinks(contents);
+        ArrayList<String> links = getLinks(contents);
 
-        int counter = 0;
-
-        for (Map.Entry<String, List<String>> pair : yikes.entrySet()) {
-            if (pair.getValue().isEmpty()) {
-
-            } else {
-                counter++;
-            }
-        }
-
-        System.out.println("HTML Counter: " + counter1);
-        System.out.println("link Counter: " + counter);
-        // System.out.println(links);
+    
+         System.out.println(links);
     }
 }
