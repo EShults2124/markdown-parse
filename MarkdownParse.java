@@ -11,7 +11,6 @@ import java.util.Map;
 
 public class MarkdownParse {
 
-  
     static int findCloseParen(String markdown, int openParen) {
         int closeParen = openParen + 1;
         int openParenCount = 1;
@@ -34,18 +33,18 @@ public class MarkdownParse {
     public static Map<String, List<String>> getLinks(File dirOrFile) throws IOException {
         Map<String, List<String>> result = new HashMap<>();
         if (dirOrFile.isDirectory()) {
-          
+
             for (File f : dirOrFile.listFiles()) {
                 result.putAll(getLinks(f));
-               
+
             }
-            System.out.println("Total files:" + counter);
+
             return result;
         } else {
             Path p = dirOrFile.toPath();
             int lastDot = p.toString().lastIndexOf(".");
             if (lastDot == -1 || !p.toString().substring(lastDot).equals(".md")) {
-             
+
                 return result;
             }
             ArrayList<String> links = getLinks(Files.readString(p));
@@ -97,7 +96,6 @@ public class MarkdownParse {
 
         ArrayList<String> links = getLinks(contents);
 
-    
-         System.out.println(links);
+        System.out.println(links);
     }
 }
