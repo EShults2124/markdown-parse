@@ -89,10 +89,8 @@ public class MarkdownParse {
     }
 
     public static void main(String[] args) throws IOException {
-        // Path fileName = Path.of(args[0]);
-        // String contents = Files.readString(fileName);
-
-        File contents = new File("test-files/");
+        Path fileName = Path.of(args[0]);
+        String contents = Files.readString(fileName);
 
         ArrayList<String> links = getLinks(contents);
 
