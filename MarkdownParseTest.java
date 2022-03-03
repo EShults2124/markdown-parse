@@ -2,44 +2,91 @@ import static org.junit.Assert.*;
 import org.junit.*;
 
 import java.io.IOException;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
+import java.util.ArrayList;
 
 public class MarkdownParseTest {
     @Test
-    public void testFile1() throws IOException {
-        String contents= Files.readString(Path.of("./test-file.md"));
-        List<String> expect = List.of("https://something.com", "some-page.html");
-        assertEquals(MarkdownParse.getLinks(contents), expect);
-    }
-    
-    @Test
-    public void testFile2() throws IOException {
-        String contents= Files.readString(Path.of("./test-file2.md"));
-        List<String> expect = List.of("https://something.com", "some-page.html");
-        assertEquals(MarkdownParse.getLinks(contents), expect);
+    public void addition() {
+        assertEquals(1, 1 + 0);
     }
 
     @Test
-    public void testMissingCloseParen() {
-        String contents= "[link title](a.com";
-        List<String> expect = List.of();
-        assertEquals(MarkdownParse.getLinks(contents), expect);
+    public void testSnippet1() throws IOException {
+
+        String testingFile = "SnippetOne.md";
+
+        Path fileName = Path.of(testingFile);
+        String contents = Files.readString(fileName);
+        ArrayList<String> validLinks = MarkdownParse.getLinks(contents);
+
+        ArrayList<String> test = new ArrayList<>();
+        test.add("`google.com");
+        test.add("google.com");
+        test.add("ucsd.edu");
+
+        assertTrue(test.equals(validLinks));
+
     }
 
     @Test
-    public void testSpaceAroundLink() {
-        String contents= "[link title](   a.com   )";
-        List<String> expect = List.of("a.com");
-        assertEquals(expect, MarkdownParse.getLinks(contents));
+    public void testSnippet2() throws IOException {
+
+        String testingFile = "SnippetTwo.md";
+
+        Path fileName = Path.of(testingFile);
+        String contents = Files.readString(fileName);
+        ArrayList<String> validLinks = MarkdownParse.getLinks(contents);
+
+        ArrayList<String> test = new ArrayList<>();
+        test.add("a.com");
+        test.add("a.com(())");
+        test.add("example.com");
+
+        assertTrue(test.equals(validLinks));
+
     }
 
     @Test
-    public void testNestedParens() throws IOException {
-        String contents = Files.readString(Path.of("test-parens-inside-link.md"));
-        List<String> expect = List.of("something.com()", "something.com((()))", "something.com", "boring.com");
-        assertEquals(expect, MarkdownParse.getLinks(contents));
+    public void testSnippet3() throws IOException {
+
+        String testingFile = "SnippetThree.md";
+
+        Path fileName = Path.of(testingFile);
+        String contents = Files.readString(fileName);
+        ArrayList<String> validLinks = MarkdownParse.getLinks(contents);
+
+        ArrayList<String> test = new ArrayList<>();
+        test.add("https://ucsd-cse15l-w22.github.io/");
+
+        assertTrue(test.equals(validLinks));
+
     }
 
+    /*
+     * @Test
+     * public void inBetween() throws IOException {
+     * 
+     * String[] test1 = { "hi.com", "hi.com" };
+     * String[] args = { "InBetween.md" };
+     * 
+     * Path fileName = Path.of("InfiniteLoop.md");
+     * String contents = Files.readString(fileName);
+     * ArrayList<String> links = MarkdownParse.getLinks(contents);
+     * 
+     * boolean error = false;
+     * 
+     * for (int i = 0; i < test1.length; i++) {
+     * if (test1[i] != links.get(i)) {
+     * error = true;
+     * break;
+     * }
+     * }
+     * https://github.com/austin-li/CSE15L-TheLunaMoths.git
+     * assertFalse(error);
+     * 
+     * }
+     */
 }
