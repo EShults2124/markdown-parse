@@ -1,11 +1,62 @@
 
 // File reading code from https://howtodoinjava.com/java/io/java-read-file-to-string-examples/
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MarkdownParse {
+
+    static int counter1 = 0;
+    static int counter2 = 0;
+
+    static int findCloseParen(String markdown, int openParen) {
+        int closeParen = openParen + 1;
+        int openParenCount = 1;
+        while (openParenCount > 0 && closeParen < markdown.length()) {
+            if (markdown.charAt(closeParen) == '(') {
+                openParenCount++;
+            } else if (markdown.charAt(closeParen) == ')') {
+                openParenCount--;
+            }
+            closeParen++;
+        }
+        if (openParenCount == 0) {
+            return closeParen - 1;
+        } else {
+            return -1;
+        }
+
+    }
+
+    public static Map<String, List<String>> getLinks(File dirOrFile) throws IOException {
+        Map<String, List<String>> result = new HashMap<>();
+        if (dirOrFile.isDirectory()) {
+            int counter = 0;
+            for (File f : dirOrFile.listFiles()) {
+                result.putAll(getLinks(f));
+                counter++;
+            }
+            System.out.println("Total files:" + counter);
+            return result;
+        } else {
+            Path p = dirOrFile.toPath();
+            int lastDot = p.toString().lastIndexOf(".");
+            if (lastDot == -1 || !p.toString().substring(lastDot).equals(".md")) {
+                counter1++;
+                return result;
+            }
+            ArrayList<String> links = getLinks(Files.readString(p));
+            result.put(dirOrFile.getPath(), links);
+
+            return result;
+        }
+    }
+
     public static ArrayList<String> getLinks(String markdown) {
         ArrayList<String> toReturn = new ArrayList<>();
         // find the next [, then find the ], then find the (, then take up to
@@ -13,38 +64,54 @@ public class MarkdownParse {
         int currentIndex = 0;
         while (currentIndex < markdown.length()) {
             int nextOpenBracket = markdown.indexOf("[", currentIndex);
+            int nextCodeBlock = markdown.indexOf("\n```");
+            if (nextCodeBlock < nextOpenBracket && nextCodeBlock != -1) {
+                int endOfCodeBlock = markdown.indexOf("\n```");
+                currentIndex = endOfCodeBlock + 1;
+                continue;
+            }
             int nextCloseBracket = markdown.indexOf("]", nextOpenBracket);
             int openParen = markdown.indexOf("(", nextCloseBracket);
-            int closeParen = markdown.indexOf(")", openParen);
-            if (currentIndex < 0 || nextCloseBracket < 0 || nextOpenBracket < 0 || openParen < 0 || closeParen < 0) {
-                break;
-            }
-            if (openParen == nextCloseBracket + 1) {
-                if (nextOpenBracket != 0 && markdown.charAt(nextOpenBracket - 1) != '!') {
-                    toReturn.add(markdown.substring(openParen + 1, closeParen));
-                } else if (markdown.charAt(currentIndex) == '[')
-                    toReturn.add(markdown.substring(openParen + 1, closeParen));
-            }
-            currentIndex = closeParen + 1;
 
+            // The close paren we need may not be the next one in the file
+            int closeParen = findCloseParen(markdown, openParen);
+
+            if (nextOpenBracket == -1 || nextCloseBracket == -1
+                    || closeParen == -1 || openParen == -1) {
+                return toReturn;
+            }
+            String potentialLink = markdown.substring(openParen + 1, closeParen).trim();
+            if (potentialLink.indexOf(" ") == -1 && potentialLink.indexOf("\n") == -1) {
+                toReturn.add(potentialLink);
+                currentIndex = closeParen + 1;
+            } else {
+                currentIndex = currentIndex + 1;
+            }
         }
-
         return toReturn;
     }
 
     public static void main(String[] args) throws IOException {
-        Path fileName = Path.of(args[0]);
-        String contents = Files.readString(fileName);
-        ArrayList<String> links = getLinks(contents);
-        System.out.println(links);
+        // Path fileName = Path.of(args[0]);
+        // String contents = Files.readString(fileName);
+
+        File contents = new File("test-files/");
+
+        // ArrayList<String> links = \
+        Map<String, List<String>> yikes = getLinks(contents);
+
+        int counter = 0;
+
+        for (Map.Entry<String, List<String>> pair : yikes.entrySet()) {
+            if (pair.getValue().isEmpty()) {
+
+            } else {
+                counter++;
+            }
+        }
+
+        System.out.println("HTML Counter: " + counter1);
+        System.out.println("link Counter: " + counter);
+        // System.out.println(links);
     }
-
-    public static ArrayList<String> mainCopy(String nameOfFile) throws IOException {
-        Path fileName = Path.of(nameOfFile);
-        String contents = Files.readString(fileName);
-        ArrayList<String> links = getLinks(contents);
-        return links;
-
-    }
-
 }
